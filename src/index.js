@@ -3,7 +3,13 @@ var React = require('react');
 
 class StoryBox extends React.Component{
   render(){
-    return( <div>Storybox</div> );
+    const now=new Date();
+    return( <div>
+        <h3>Storybox</h3>
+        <p className="lead">
+          {now.toTimeString()}
+        </p>
+        </div> );
   }
 }
 

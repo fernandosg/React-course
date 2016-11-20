@@ -20453,10 +20453,20 @@ var StoryBox = function (_React$Component) {
   _createClass(StoryBox, [{
     key: 'render',
     value: function render() {
+      var now = new Date();
       return React.createElement(
         'div',
         null,
-        'Storybox'
+        React.createElement(
+          'h3',
+          null,
+          'Storybox'
+        ),
+        React.createElement(
+          'p',
+          { className: 'lead' },
+          now.toTimeString()
+        )
       );
     }
   }]);
