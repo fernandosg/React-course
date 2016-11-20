@@ -6,7 +6,8 @@ module.exports = function (grunt) {
           transform: [['babelify', {presets: ['es2015', 'react']}]]
         },
         files: {
-          "./dist/app.js": ["./src/index.js"]
+          "./dist/app1.js": ["./src/app1.js"],
+          "./dist/app2.js": ["./src/app2.js"]
         }
       }
     },
