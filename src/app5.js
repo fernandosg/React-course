@@ -1,6 +1,6 @@
 var ReactDOM = require('react-dom');
 var React = require('react');
-
+var $=require("jquery");
 class CommentBox extends React.Component{
 
   constructor(){
@@ -13,7 +13,28 @@ class CommentBox extends React.Component{
       ]
     };
   }
+  //This method is called before the render event is called.
+  componenttWillMount(){
+    _fetchComments();
+  }
 
+  //This method is called after the render methid is called
+  componentDidMount(){
+    this._timer=setInterval(()=>this._fetchComments(),5000);
+  }
+
+  componenttWillUnmount(){
+    clearInterval(this._timer);
+  }
+  _fetchComments(){
+    $.ajax({
+      method:"GET",
+      url:"/api/comments",
+      success:(comments)=>{
+        this.setState({comments})
+      }
+    })
+  }
   _getComments(){
     return this.state.comments.map((comment)=>{
       return (<Comment author={comment.author} body={comment.body} key={comment.id}/>)
