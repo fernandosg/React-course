@@ -30654,6 +30654,8 @@ module.exports = require('./lib/React');
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -30678,12 +30680,24 @@ var CommentBox = function (_React$Component) {
     };
     return _this;
   }
-  //This method is called before the render event is called.
-
 
   _createClass(CommentBox, [{
-    key: 'componenttWillMount',
-    value: function componenttWillMount() {
+    key: '_fetchComments',
+    value: function _fetchComments() {}
+    /*
+    $.ajax({
+      method:"GET",
+      url:"/api/comments",
+      success:(comments)=>{
+        this.setState({comments})
+      }
+    })*/
+
+    //This method is called before the render event is called.
+
+  }, {
+    key: 'componentWillMount',
+    value: function componentWillMount() {
       _fetchComments();
     }
 
@@ -30704,23 +30718,27 @@ var CommentBox = function (_React$Component) {
       clearInterval(this._timer);
     }
   }, {
-    key: '_fetchComments',
-    value: function _fetchComments() {
-      var _this3 = this;
-
+    key: '_deleteComment',
+    value: function _deleteComment(comment) {
+      /*
       $.ajax({
-        method: "GET",
-        url: "/api/comments",
-        success: function success(comments) {
-          _this3.setState({ comments: comments });
-        }
-      });
+      method:"DELETE",
+      url:"/api/comments/"+comment.id
+      })
+      */
+
+      var comments = [].concat(_toConsumableArray(this.state.comments));
+      var commentIndex = comments.indexOf(comments);
+      comments.splice(commentIndex, 1);
+      this.setState({ comments: comments });
     }
   }, {
     key: '_getComments',
     value: function _getComments() {
+      var _this3 = this;
+
       return this.state.comments.map(function (comment) {
-        return React.createElement(Comment, { author: comment.author, body: comment.body, key: comment.id });
+        return React.createElement(Comment, { key: comment.id, comment: comment, onDelete: _this3._deleteComment.bind(_this3) });
       });
     }
   }, {
@@ -30742,12 +30760,24 @@ var CommentBox = function (_React$Component) {
   }, {
     key: '_addComment',
     value: function _addComment(author, body) {
+
       var comment = {
         id: this.state.comments.length + 1,
         author: author,
         body: body
       };
       this.setState({ comments: this.state.comments.concat([comment]) });
+
+      /*
+      const comment={author,body};
+      $.ajax({
+      method:"POS",
+      url:"/api/comments"
+      data:{comment:comment}
+      }).success(newComment=>{
+      })
+      this.setState({comments:this.state.comments.concat([newComment])})
+      */
     }
   }, {
     key: 'render',
@@ -30880,11 +30910,17 @@ var Comment = function (_React$Component3) {
           { className: 'comment-footer' },
           React.createElement(
             'a',
-            { href: '#', className: 'comment-footer-delete' },
+            { href: '#', className: 'comment-footer-delete', onClick: this._handleDelete.bind(this) },
             'Delete comment'
           )
         )
       );
+    }
+  }, {
+    key: '_handleDelete',
+    value: function _handleDelete(event) {
+      event.preventDefault();
+      if (confirm("¿Are you sure?")) this.props.onDelete(this.props.comment);
     }
   }]);
 

@@ -13,8 +13,20 @@ class CommentBox extends React.Component{
       ]
     };
   }
+
+
+  _fetchComments(){
+    /*
+    $.ajax({
+      method:"GET",
+      url:"/api/comments",
+      success:(comments)=>{
+        this.setState({comments})
+      }
+    })*/
+  }
   //This method is called before the render event is called.
-  componenttWillMount(){
+  componentWillMount(){
     _fetchComments();
   }
 
@@ -26,63 +38,81 @@ class CommentBox extends React.Component{
   componenttWillUnmount(){
     clearInterval(this._timer);
   }
-  _fetchComments(){
-    $.ajax({
-      method:"GET",
-      url:"/api/comments",
-      success:(comments)=>{
-        this.setState({comments})
-      }
-    })
-  }
-  _getComments(){
-    return this.state.comments.map((comment)=>{
-      return (<Comment author={comment.author} body={comment.body} key={comment.id}/>)
-    })
-  }
-  _getCommentsTitle(commentCount){
-    if(commentCount==0){
-      return "Not comment yet";
-    }else if(commentCount==1){
-      return "1 comment";
-    }else{
-      return commentCount+' comments'
-    }
-  }
-  _handleClick(){
-    this.setState({showComments:!this.state.showComments})
-  }
 
-  _addComment(author, body){
-    const comment={
-      id:this.state.comments.length+1,
-      author,
-      body
-    }
-    this.setState({comments:this.state.comments.concat([comment])});
-  };
-  render(){
-    const comments=this._getComments();
-    let commentNodes;
-    if(this.state.showComments){
-      commentNodes= <div className="comment-list">{comments}</div>
-    }
-    let buttonText;
-    if(this.state.showComments){
-      buttonText="Hide comments";
-    }else{
-      buttonText="Show comments";
-    }
-    return(
-      <div className="comment-box">
-      <CommentForm addComment={this._addComment.bind(this)} />
-      <button onClick={this._handleClick.bind(this)}>{buttonText}</button>
-      <h3>Comments</h3>
-      <h4 className="comment-count">{this._getCommentsTitle(comments.length)}</h4>
-      {commentNodes}
-      </div>
-    )
+  _deleteComment(comment){
+    /*
+    $.ajax({
+    method:"DELETE",
+    url:"/api/comments/"+comment.id
+  })
+  */
+
+  const comments=[...this.state.comments];
+  const commentIndex=comments.indexOf(comments);
+  comments.splice(commentIndex,1);
+  this.setState({comments});
+}
+
+_getComments(){
+  return this.state.comments.map((comment)=>{
+    return (<Comment key={comment.id} comment={comment} onDelete={this._deleteComment.bind(this)}/>)
+  })
+}
+_getCommentsTitle(commentCount){
+  if(commentCount==0){
+    return "Not comment yet";
+  }else if(commentCount==1){
+    return "1 comment";
+  }else{
+    return commentCount+' comments'
   }
+}
+_handleClick(){
+  this.setState({showComments:!this.state.showComments})
+}
+
+_addComment(author, body){
+
+  const comment={
+    id:this.state.comments.length+1,
+    author,
+    body
+  }
+  this.setState({comments:this.state.comments.concat([comment])});
+
+  /*
+  const comment={author,body};
+  $.ajax({
+  method:"POS",
+  url:"/api/comments"
+  data:{comment:comment}
+}).success(newComment=>{
+})
+this.setState({comments:this.state.comments.concat([newComment])})
+*/
+};
+render(){
+  const comments=this._getComments();
+  let commentNodes;
+  if(this.state.showComments){
+    commentNodes= <div className="comment-list">{comments}</div>
+  }
+  let buttonText;
+  if(this.state.showComments){
+    buttonText="Hide comments";
+  }else{
+    buttonText="Show comments";
+  }
+  return(
+    <div className="comment-box">
+    <CommentForm addComment={this._addComment.bind(this)} />
+    <button onClick={this._handleClick.bind(this)}>{buttonText}</button>
+    <h3>Comments</h3>
+    <h4 className="comment-count">{this._getCommentsTitle(comments.length)}</h4>
+    {commentNodes}
+    </div>
+  )
+}
 }
 
 
@@ -118,10 +148,16 @@ class Comment extends React.Component{
       {this.props.body}
       </p>
       <div className="comment-footer">
-      <a href="#" className="comment-footer-delete">Delete comment</a>
+      <a href="#" className="comment-footer-delete" onClick={this._handleDelete.bind(this)}>Delete comment</a>
       </div>
       </div>
     )
+  }
+
+  _handleDelete(event){
+    event.preventDefault();
+    if(confirm("¿Are you sure?"))
+    this.props.onDelete(this.props.comment);
   }
 }
 
