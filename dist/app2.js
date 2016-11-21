@@ -20447,7 +20447,12 @@ var CommentBox = function (_React$Component) {
   function CommentBox() {
     _classCallCheck(this, CommentBox);
 
-    return _possibleConstructorReturn(this, (CommentBox.__proto__ || Object.getPrototypeOf(CommentBox)).apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, (CommentBox.__proto__ || Object.getPrototypeOf(CommentBox)).call(this));
+
+    _this.state = {
+      showComments: false
+    };
+    return _this;
   }
 
   _createClass(CommentBox, [{
@@ -20471,12 +20476,36 @@ var CommentBox = function (_React$Component) {
       }
     }
   }, {
+    key: '_handleClick',
+    value: function _handleClick() {
+      this.setState({ showComments: !this.state.showComments });
+    }
+  }, {
     key: 'render',
     value: function render() {
       var comments = this._getComments();
+      var commentNodes = void 0;
+      if (this.state.showComments) {
+        commentNodes = React.createElement(
+          'div',
+          { className: 'comment-list' },
+          comments
+        );
+      }
+      var buttonText = void 0;
+      if (this.state.showComments) {
+        buttonText = "Hide comments";
+      } else {
+        buttonText = "Show comments";
+      }
       return React.createElement(
         'div',
         { className: 'comment-box' },
+        React.createElement(
+          'button',
+          { onClick: this._handleClick.bind(this) },
+          buttonText
+        ),
         React.createElement(
           'h3',
           null,
@@ -20487,11 +20516,7 @@ var CommentBox = function (_React$Component) {
           { className: 'comment-count' },
           this._getCommentsTitle(comments.length)
         ),
-        React.createElement(
-          'div',
-          { className: 'comment-list' },
-          comments
-        )
+        commentNodes
       );
     }
   }]);
