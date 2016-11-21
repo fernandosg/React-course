@@ -20450,7 +20450,8 @@ var CommentBox = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, (CommentBox.__proto__ || Object.getPrototypeOf(CommentBox)).call(this));
 
     _this.state = {
-      showComments: false
+      showComments: false,
+      comments: [{ id: 1, author: "Morgan McCircuit from array", body: "Great picture!" }, { id: 2, author: "Bending Bender", body: "Excellent stuff" }]
     };
     return _this;
   }
@@ -20458,9 +20459,7 @@ var CommentBox = function (_React$Component) {
   _createClass(CommentBox, [{
     key: '_getComments',
     value: function _getComments() {
-      var commentList = [{ id: 1, author: "Morgan McCircuit from array", body: "Great picture!" }, { id: 2, author: "Bending Bender", body: "Excellent stuff" }];
-
-      return commentList.map(function (comment) {
+      return this.state.comments.map(function (comment) {
         return React.createElement(Comment, { author: comment.author, body: comment.body, key: comment.id });
       });
     }
@@ -20479,6 +20478,16 @@ var CommentBox = function (_React$Component) {
     key: '_handleClick',
     value: function _handleClick() {
       this.setState({ showComments: !this.state.showComments });
+    }
+  }, {
+    key: '_addComment',
+    value: function _addComment(author, body) {
+      var comment = {
+        id: this.state.comments.length + 1,
+        author: author,
+        body: body
+      };
+      this.setState({ comments: this.state.comments.concat([comment]) });
     }
   }, {
     key: 'render',
@@ -20501,6 +20510,7 @@ var CommentBox = function (_React$Component) {
       return React.createElement(
         'div',
         { className: 'comment-box' },
+        React.createElement(CommentForm, { addComment: this._addComment.bind(this) }),
         React.createElement(
           'button',
           { onClick: this._handleClick.bind(this) },
@@ -20524,8 +20534,64 @@ var CommentBox = function (_React$Component) {
   return CommentBox;
 }(React.Component);
 
-var Comment = function (_React$Component2) {
-  _inherits(Comment, _React$Component2);
+var CommentForm = function (_React$Component2) {
+  _inherits(CommentForm, _React$Component2);
+
+  function CommentForm() {
+    _classCallCheck(this, CommentForm);
+
+    return _possibleConstructorReturn(this, (CommentForm.__proto__ || Object.getPrototypeOf(CommentForm)).apply(this, arguments));
+  }
+
+  _createClass(CommentForm, [{
+    key: 'render',
+    value: function render() {
+      var _this3 = this;
+
+      return React.createElement(
+        'form',
+        { className: 'comment-form', onSubmit: this._handleSubmit.bind(this) },
+        React.createElement(
+          'label',
+          null,
+          'Join the discussion'
+        ),
+        React.createElement(
+          'div',
+          { className: 'comment-form-fields' },
+          React.createElement('input', { placeholder: 'Name:', ref: function ref(input) {
+              return _this3._author = input;
+            } }),
+          React.createElement('textarea', { placeholder: 'Comment:', ref: function ref(textarea) {
+              return _this3._body = textarea;
+            } })
+        ),
+        React.createElement(
+          'div',
+          { className: 'comment-form-actions' },
+          React.createElement(
+            'button',
+            { type: 'submit' },
+            'Post comment'
+          )
+        )
+      );
+    }
+  }, {
+    key: '_handleSubmit',
+    value: function _handleSubmit(event) {
+      event.preventDefault();
+      var author = this._author;
+      var body = this._body;
+      this.props.addComment(author.value, body.value);
+    }
+  }]);
+
+  return CommentForm;
+}(React.Component);
+
+var Comment = function (_React$Component3) {
+  _inherits(Comment, _React$Component3);
 
   function Comment() {
     _classCallCheck(this, Comment);
