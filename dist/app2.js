@@ -20441,40 +20441,85 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var ReactDOM = require('react-dom');
 var React = require('react');
 
-var StoryBox = function (_React$Component) {
-  _inherits(StoryBox, _React$Component);
+var CommentBox = function (_React$Component) {
+  _inherits(CommentBox, _React$Component);
 
-  function StoryBox() {
-    _classCallCheck(this, StoryBox);
+  function CommentBox() {
+    _classCallCheck(this, CommentBox);
 
-    return _possibleConstructorReturn(this, (StoryBox.__proto__ || Object.getPrototypeOf(StoryBox)).apply(this, arguments));
+    return _possibleConstructorReturn(this, (CommentBox.__proto__ || Object.getPrototypeOf(CommentBox)).apply(this, arguments));
   }
 
-  _createClass(StoryBox, [{
+  _createClass(CommentBox, [{
     key: 'render',
     value: function render() {
-      var topicsList = ["HTML", "Javascript", "React"];
       return React.createElement(
         'div',
-        null,
+        { className: 'comment-box' },
         React.createElement(
-          'ul',
+          'h3',
           null,
-          topicsList.map(function (topic) {
-            return React.createElement(
-              'li',
-              null,
-              topic
-            );
-          })
+          'Comments'
+        ),
+        React.createElement(
+          'h4',
+          { className: 'comment-count' },
+          '2 comments'
+        ),
+        React.createElement(
+          'div',
+          { className: 'comment-list' },
+          React.createElement(Comment, { author: 'Morgan McCircuit', body: 'Great picture!' }),
+          React.createElement(Comment, { author: 'Bending Bender', body: 'Excellent stuff' })
         )
       );
     }
   }]);
 
-  return StoryBox;
+  return CommentBox;
 }(React.Component);
 
-ReactDOM.render(React.createElement(StoryBox, null), document.getElementById("story-app"));
+var Comment = function (_React$Component2) {
+  _inherits(Comment, _React$Component2);
+
+  function Comment() {
+    _classCallCheck(this, Comment);
+
+    return _possibleConstructorReturn(this, (Comment.__proto__ || Object.getPrototypeOf(Comment)).apply(this, arguments));
+  }
+
+  _createClass(Comment, [{
+    key: 'render',
+    value: function render() {
+      return React.createElement(
+        'div',
+        { className: 'comment' },
+        React.createElement(
+          'p',
+          { className: 'comment-header' },
+          this.props.author
+        ),
+        React.createElement(
+          'p',
+          { className: 'comment-body' },
+          this.props.body
+        ),
+        React.createElement(
+          'div',
+          { className: 'comment-footer' },
+          React.createElement(
+            'a',
+            { href: '#', className: 'comment-footer-delete' },
+            'Delete comment'
+          )
+        )
+      );
+    }
+  }]);
+
+  return Comment;
+}(React.Component);
+
+ReactDOM.render(React.createElement(CommentBox, null), document.getElementById("story-app"));
 
 },{"react":177,"react-dom":26}]},{},[178]);
